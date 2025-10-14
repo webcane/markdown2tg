@@ -67,15 +67,14 @@ public record TelegramMarkdownConverter(ConversionOptions options) {
                 continue;
             }
 
+            // horizontal rule
             Matcher hr = HR.matcher(line);
             if (hr.matches()) {
                 outLines.add("\u2014\u2014\u2014");
                 continue;
             }
 
-//            if (convertHeadingLine(line, outLines))
-//                continue;
-//            outLines.add(options.getHeadingHandling().apply(line));
+            // heading
             if (options.getHeadingHandling().isHandle()) {
                 outLines.add(convertHeadingLine(line));
                 continue;
@@ -116,9 +115,6 @@ public record TelegramMarkdownConverter(ConversionOptions options) {
         return String.join("\n", outLines);
     }
 
-//    boolean convertHeadingLine(String line, List<String> outLines) {
-//        return outLines.add(options.getHeadingHandling().apply(line));
-//    }
     String convertHeadingLine(String line) {
         return options.getHeadingHandling().apply(line);
     }
