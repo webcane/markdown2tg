@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-final class EscapeUtils {
+public final class EscapeUtils {
 
     static final Map<CharSequence, CharSequence> ESCAPE_MAP = new HashMap<>() {
         {
@@ -60,8 +60,8 @@ final class EscapeUtils {
         return url.replace(" ", "%20").replace("(", "%28").replace(")", "%29");
     }
 
-    public static String unescapeHtmlToText(String html) {
-        if (html == null) return null;
-        return StringEscapeUtils.unescapeHtml4(html);
-    }
+//    public static String unescapeHtmlToText(String html) {
+//        if (html == null) return null;
+//        return StringEscapeUtils.unescapeHtml4(html);
+//    }
 }

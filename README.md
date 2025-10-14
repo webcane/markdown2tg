@@ -20,7 +20,7 @@ dependencies {
 ## Usage
 
 ```java
-import cane.brothers.markdown.TelegramMarkdownConverter;
+import cane.brothers.markdown.convert.TelegramMarkdownConverter;
 
 TelegramMarkdownConverter c = new TelegramMarkdownConverter();
 String out = c.convert("# Title\n\n*Hello* **world**. [link](https://example.com)");
