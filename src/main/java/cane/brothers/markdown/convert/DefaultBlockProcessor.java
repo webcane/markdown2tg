@@ -12,8 +12,9 @@ class DefaultBlockProcessor implements BlockProcessor {
     private final Queue<BlockHandler> blockHandlers = new LinkedList<>();
 
     DefaultBlockProcessor(ConversionOptions options, InlineProcessor inlineProcessor) {
-        // Initialize block handlers in order of precedence
-        blockHandlers.add(new HorizontalRuleBlockHandler(inlineProcessor));
+        // Add QuotingBlockHandler first for highest priority (fenced blocks)
+        blockHandlers.add(new QuotingBlockHandler());
+        blockHandlers.add(new HorizontalRuleBlockHandler());
         blockHandlers.add(new HeadingBlockHandler(inlineProcessor, createHeadingStrategy(options)));
         blockHandlers.add(new BlockquoteBlockHandler(inlineProcessor));
         blockHandlers.add(new OrderedListBlockHandler(inlineProcessor));

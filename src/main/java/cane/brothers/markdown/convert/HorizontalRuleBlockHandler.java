@@ -9,7 +9,7 @@ class HorizontalRuleBlockHandler implements BlockHandler {
     private static final Pattern HR_PATTERN = Pattern.compile("^(-{3,}|_{3,}|\\*{3,})\\s*$");
 
 
-    public HorizontalRuleBlockHandler(InlineProcessor inlineProcessor) {
+    public HorizontalRuleBlockHandler() {
     }
 
     @Override
@@ -20,7 +20,7 @@ class HorizontalRuleBlockHandler implements BlockHandler {
     @Override
     public ConversionResult<String> process(String line) {
         // Horizontal rules are converted to em dash sequence
-        return ConversionResult.success("\u2014\u2014\u2014");
+        return ConversionResult.success("———");
     }
     
     @Override

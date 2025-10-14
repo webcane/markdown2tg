@@ -11,7 +11,7 @@ class HorizontalRuleBlockHandlerTest {
     
     @BeforeEach
     void setUp() {
-        handler = new HorizontalRuleBlockHandler(null);
+        handler = new HorizontalRuleBlockHandler();
     }
     
     @Test
@@ -43,28 +43,28 @@ class HorizontalRuleBlockHandlerTest {
     void testProcessReturnsEmDash() {
         var result = handler.process("---");
         assertTrue(result.isConverted());
-        assertEquals("\u2014\u2014\u2014", result.getValue());
+        assertEquals("———", result.getValue());
     }
     
     @Test
     void testProcessWithUnderscores() {
         var result = handler.process("___");
         assertTrue(result.isConverted());
-        assertEquals("\u2014\u2014\u2014", result.getValue());
+        assertEquals("———", result.getValue());
     }
     
     @Test
     void testProcessWithAsterisks() {
         var result = handler.process("***");
         assertTrue(result.isConverted());
-        assertEquals("\u2014\u2014\u2014", result.getValue());
+        assertEquals("———", result.getValue());
     }
     
     @Test
     void testProcessWithSpaces() {
         var result = handler.process("---   ");
         assertTrue(result.isConverted());
-        assertEquals("\u2014\u2014\u2014", result.getValue());
+        assertEquals("———", result.getValue());
     }
     
     @Test
@@ -83,35 +83,35 @@ class HorizontalRuleBlockHandlerTest {
     //        void testHorizontalRuleWithDashes() {
     //            TelegramMarkdownConverter c = new TelegramMarkdownConverter();
     //            String out = c.convert("---");
-    //            assertEquals("\u2014\u2014\u2014", out);
+    //            assertEquals("———", out);
     //        }
     //
     //        @Test
     //        void testHorizontalRuleWithUnderscores() {
     //            TelegramMarkdownConverter c = new TelegramMarkdownConverter();
     //            String out = c.convert("___");
-    //            assertEquals("\u2014\u2014\u2014", out);
+    //            assertEquals("———", out);
     //        }
     //
     //        @Test
     //        void testHorizontalRuleWithAsterisks() {
     //            TelegramMarkdownConverter c = new TelegramMarkdownConverter();
     //            String out = c.convert("***");
-    //            assertEquals("\u2014\u2014\u2014", out);
+    //            assertEquals("———", out);
     //        }
     //
     //        @Test
     //        void testHorizontalRuleWithSpaces() {
     //            TelegramMarkdownConverter c = new TelegramMarkdownConverter();
     //            String out = c.convert("---   ");
-    //            assertEquals("\u2014\u2014\u2014", out);
+    //            assertEquals("———", out);
     //        }
     //
     //        @Test
     //        void testHorizontalRuleWithMoreThanThree() {
     //            TelegramMarkdownConverter c = new TelegramMarkdownConverter();
     //            String out = c.convert("------");
-    //            assertEquals("\u2014\u2014\u2014", out);
+    //            assertEquals("———", out);
     //        }
     //
     //        @Test
