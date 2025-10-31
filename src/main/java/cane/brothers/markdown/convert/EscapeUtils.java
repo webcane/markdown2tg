@@ -1,4 +1,4 @@
-package cane.brothers.markdown;
+package cane.brothers.markdown.convert;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.text.translate.AggregateTranslator;
