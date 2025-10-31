@@ -2,6 +2,7 @@ package cane.brothers.markdown.convert;
 
 /**
  * Processor for block-level markdown elements (headings, lists, code blocks, etc.)
+ * Has priority to determine processing order.
  */
 public interface BlockProcessor {
 
@@ -11,5 +12,5 @@ public interface BlockProcessor {
      * @param line the input line of text
      * @return the conversion result, containing the converted value if successful
      */
-    ConversionResult<String> process(String line);
+    ConversionResult<String> process(ConversionResult<String> line);
 }

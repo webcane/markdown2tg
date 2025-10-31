@@ -13,14 +13,15 @@ class BoldInlineMarkdownHandler implements InlineMarkdownHandler {
     private static final Pattern UNDERSCORE_BOLD_PATTERN = Pattern.compile("__([^_]+)__");
     
     @Override
-    public boolean canHandle(String line) {
-        return BOLD_PATTERN.matcher(line).find() || 
-               UNDERSCORE_BOLD_PATTERN.matcher(line).find();
+    public boolean canHandle(ConversionResult<String> line) {
+        var lineValue = line.getValue();
+        return BOLD_PATTERN.matcher(lineValue).find() ||
+               UNDERSCORE_BOLD_PATTERN.matcher(lineValue).find();
     }
     
     @Override
-    public ConversionResult<String> process(String line) {
-        String result = line;
+    public ConversionResult<String> apply(ConversionResult<String> line) {
+        String result = line.getValue();
         
         // Convert **text** to *text*
         result = BOLD_PATTERN.matcher(result).replaceAll(matchResult -> {

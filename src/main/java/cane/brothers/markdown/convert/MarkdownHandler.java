@@ -1,9 +1,11 @@
 package cane.brothers.markdown.convert;
 
+import java.util.function.Function;
+
 /**
  * Base interface for all markdown handlers
  */
-public interface MarkdownHandler {
+public interface MarkdownHandler extends Function<ConversionResult<String>, ConversionResult<String>> {
 
     /**
      * Check if this handler can process the given line
@@ -11,15 +13,7 @@ public interface MarkdownHandler {
      * @param line the input line
      * @return true if this handler can process the line
      */
-    boolean canHandle(String line);
-
-    /**
-     * Process the line and return the result
-     *
-     * @param line the input line
-     * @return conversion result
-     */
-    ConversionResult<String> process(String line);
+    boolean canHandle(ConversionResult<String> line);
 
     /**
      * Get the name of this handler
@@ -27,4 +21,5 @@ public interface MarkdownHandler {
      * @return handler name
      */
     String getName();
+
 }

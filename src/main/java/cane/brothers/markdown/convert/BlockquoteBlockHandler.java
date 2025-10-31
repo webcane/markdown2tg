@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Block handler for blockquotes
  */
-class BlockquoteBlockHandler implements BlockHandler {
+class BlockquoteBlockHandler extends AbstractBlockHandler {
 
     // Pattern to match blockquotes (e.g., "> Quote")
     private static final Pattern BLOCKQUOTE_PATTERN = Pattern.compile("^\\s*>(.*)$");
@@ -18,17 +18,18 @@ class BlockquoteBlockHandler implements BlockHandler {
     }
 
     @Override
-    public boolean canHandle(String line) {
-        return BLOCKQUOTE_PATTERN.matcher(line).matches();
+    public boolean canHandle(ConversionResult<String> line) {
+        var lineValue = line.getValue();
+        return BLOCKQUOTE_PATTERN.matcher(lineValue).matches();
     }
     
     @Override
-    public ConversionResult<String> process(String line) {
-        Matcher matcher = BLOCKQUOTE_PATTERN.matcher(line);
+    protected ConversionResult<String> handle(ConversionResult<String> line) {
+        Matcher matcher = BLOCKQUOTE_PATTERN.matcher(line.getValue());
         if (matcher.matches()) {
             String text = matcher.group(1).trim();
-            String processedText = inlineProcessor.process(text);
-            return ConversionResult.success("> " + processedText);
+//            String processedText = inlineProcessor.process(text);
+            return ConversionResult.success("> " + text);
         }
         return ConversionResult.failure();
     }

@@ -12,13 +12,14 @@ class CodeInlineMarkdownHandler implements InlineMarkdownHandler {
     private static final Pattern INLINE_CODE_PATTERN = Pattern.compile("`([^`]+)`");
 
     @Override
-    public boolean canHandle(String line) {
-        return INLINE_CODE_PATTERN.matcher(line).find();
+    public boolean canHandle(ConversionResult<String> line) {
+        var lineValue = line.getValue();
+        return INLINE_CODE_PATTERN.matcher(lineValue).find();
     }
 
     @Override
-    public ConversionResult<String> process(String line) {
-        Matcher matcher = INLINE_CODE_PATTERN.matcher(line);
+    public ConversionResult<String> apply(ConversionResult<String> line) {
+        Matcher matcher = INLINE_CODE_PATTERN.matcher(line.getValue());
         StringBuilder sb = new StringBuilder();
 
         while (matcher.find()) {

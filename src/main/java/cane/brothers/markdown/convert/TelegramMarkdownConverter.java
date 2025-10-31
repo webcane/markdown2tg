@@ -37,9 +37,10 @@ public class TelegramMarkdownConverter {
 
         // Process each line
         for (String line : lines) {
+            var result = new ConversionResult<String>(line);
             // Block-level processing using block processor
-            var result = blockProcessor.process(line);
-            if (result.isConverted()) {
+            result = blockProcessor.process(result);
+            if (result.isConverted().isPresent()) {
                 outLines.add(result.getValue());
                 continue;
             }
@@ -48,7 +49,8 @@ public class TelegramMarkdownConverter {
                 continue;
             }
             // Inline-level processing for lines not handled by block processor
-            outLines.add(inlineProcessor.process(line));
+            result = inlineProcessor.process(result);
+            outLines.add(result.getValue());
         }
 
         return String.join("\n", outLines);

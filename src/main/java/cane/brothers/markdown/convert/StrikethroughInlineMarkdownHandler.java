@@ -11,13 +11,15 @@ class StrikethroughInlineMarkdownHandler implements InlineMarkdownHandler {
     private static final Pattern STRIKETHROUGH_PATTERN = Pattern.compile("~~(.+?)~~");
     
     @Override
-    public boolean canHandle(String line) {
-        return STRIKETHROUGH_PATTERN.matcher(line).find();
+    public boolean canHandle(ConversionResult<String> line) {
+        var lineValue = line.getValue();
+        return STRIKETHROUGH_PATTERN.matcher(lineValue).find();
     }
     
     @Override
-    public ConversionResult<String> process(String line) {
-        String result = STRIKETHROUGH_PATTERN.matcher(line).replaceAll(matchResult -> {
+    public ConversionResult<String> apply(ConversionResult<String> line) {
+        var lineValue = line.getValue();
+        String result = STRIKETHROUGH_PATTERN.matcher(lineValue).replaceAll(matchResult -> {
             String content = matchResult.group(1);
             return "~" + content + "~";
         });

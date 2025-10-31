@@ -9,16 +9,18 @@ import java.util.Queue;
  */
 class DefaultBlockProcessor implements BlockProcessor {
 
-    private final Queue<BlockHandler> blockHandlers = new LinkedList<>();
+    private final HandlerVisitor handlerVisitor;
 
     DefaultBlockProcessor(ConversionOptions options, InlineProcessor inlineProcessor) {
         // Add QuotingBlockHandler first for highest priority (fenced blocks)
+        Queue<AbstractBlockHandler> blockHandlers = new LinkedList<>();
         blockHandlers.add(new QuotingBlockHandler());
         blockHandlers.add(new HorizontalRuleBlockHandler());
-        blockHandlers.add(new HeadingBlockHandler(inlineProcessor, createHeadingStrategy(options)));
+        blockHandlers.add(new HeadingBlockHandler(createHeadingStrategy(options)));
         blockHandlers.add(new BlockquoteBlockHandler(inlineProcessor));
         blockHandlers.add(new OrderedListBlockHandler(inlineProcessor));
         blockHandlers.add(new UnorderedListBlockHandler(inlineProcessor));
+        handlerVisitor = new BlockHandlerVisitor(blockHandlers);
     }
 
     private HeadingStrategy createHeadingStrategy(ConversionOptions options) {
@@ -29,15 +31,14 @@ class DefaultBlockProcessor implements BlockProcessor {
         };
     }
 
-    public ConversionResult<String> process(String line) {
-        for (BlockHandler handler : blockHandlers) {
-            if (handler.canHandle(line)) {
-                ConversionResult<String> result = handler.process(line);
-                if (result.isConverted()) {
-                    return result;
-                }
-            }
+    @Override
+    public ConversionResult<String> process(ConversionResult<String> line) {
+        ConversionResult<String> result = ConversionResult.failure();
+
+        for (AbstractBlockHandler handler : handlerVisitor.getHandlers()) {
+            result = handler.apply(line);
         }
-        return ConversionResult.failure();
+
+        return result;
     }
 }

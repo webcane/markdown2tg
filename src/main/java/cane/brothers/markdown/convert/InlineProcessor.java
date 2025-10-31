@@ -11,5 +11,5 @@ public interface InlineProcessor {
      * @param text the input text
      * @return processed text
      */
-    String process(String text);
+    ConversionResult<String> process(ConversionResult<String> text);
 }

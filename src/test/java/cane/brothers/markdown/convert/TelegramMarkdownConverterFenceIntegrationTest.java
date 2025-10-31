@@ -16,7 +16,7 @@ class TelegramMarkdownConverterFenceIntegrationTest {
     void testFenceBlockWithLanguageIntegration() {
         TelegramMarkdownConverter converter = new TelegramMarkdownConverter();
         String input = "Text before\n```java\nint x = 1;\n```\nText after";
-        String expected = "Text before\n```\nint x = 1;\n```\nText after";
+        String expected = "Text before\n```java\nint x = 1;\n```\nText after";
         assertEquals(expected, converter.convert(input));
     }
 

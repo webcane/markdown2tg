@@ -5,16 +5,17 @@ import java.util.regex.Pattern;
 /**
  * Block handler for quoting/fenced code blocks (one-line, stateless)
  */
-class QuotingBlockHandler implements BlockHandler {
+class QuotingBlockHandler extends AbstractBlockHandler {
 
-    // Pattern to match quoting/fence delimiters (e.g., "```")
-    private static final Pattern FENCE_DELIMITER = Pattern.compile("^```.*$");
+    // Pattern to match quoting/fence delimiters (e.g., "```" or "```python")
+    private static final Pattern FENCE_DELIMITER = Pattern.compile("^```(?:\\w+)?$", Pattern.UNICODE_CASE);
     private boolean inFence = false;
 
     @Override
-    public boolean canHandle(String line) {
+    public boolean canHandle(ConversionResult<String> line) {
+        var lineValue = line.getValue();
         // handle lines that are fence delimiters or inside a fence block
-        return FENCE_DELIMITER.matcher(line).matches() || inFence;
+        return FENCE_DELIMITER.matcher(lineValue).matches() || inFence;
     }
 
     /**
@@ -22,13 +23,13 @@ class QuotingBlockHandler implements BlockHandler {
      * If handled, further processing should be skipped (no escaping).
      */
     @Override
-    public ConversionResult<String> process(String line) {
-        if (FENCE_DELIMITER.matcher(line).matches()) {
+    protected ConversionResult<String> handle(ConversionResult<String> line) {
+        if (FENCE_DELIMITER.matcher(line.getValue()).matches()) {
             inFence = !inFence;
-            return ConversionResult.success(line);
+            return ConversionResult.success(line.value());
         }
         if (inFence) {
-            return ConversionResult.success(line);
+            return ConversionResult.success(line.value());
         }
         return ConversionResult.failure();
     }

@@ -14,13 +14,15 @@ class ImageInlineMarkdownHandler implements InlineMarkdownHandler {
     private static final Pattern IMAGE_PATTERN = Pattern.compile("!\\[(.*?)\\]\\((.*?)\\)");
     
     @Override
-    public boolean canHandle(String line) {
-        return IMAGE_PATTERN.matcher(line).find();
+    public boolean canHandle(ConversionResult<String> line) {
+        var lineValue = line.getValue();
+        return IMAGE_PATTERN.matcher(lineValue).find();
     }
     
     @Override
-    public ConversionResult<String> process(String line) {
-        Matcher matcher = IMAGE_PATTERN.matcher(line);
+    public ConversionResult<String> apply(ConversionResult<String> line) {
+        var lineValue = line.getValue();
+        Matcher matcher = IMAGE_PATTERN.matcher(lineValue);
         StringBuilder sb = new StringBuilder();
         
         while (matcher.find()) {

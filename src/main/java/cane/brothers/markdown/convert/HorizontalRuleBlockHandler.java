@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 /**
  * Block handler for horizontal rules
  */
-class HorizontalRuleBlockHandler implements BlockHandler {
+class HorizontalRuleBlockHandler extends AbstractBlockHandler {
     private static final Pattern HR_PATTERN = Pattern.compile("^(-{3,}|_{3,}|\\*{3,})\\s*$");
 
 
@@ -13,12 +13,13 @@ class HorizontalRuleBlockHandler implements BlockHandler {
     }
 
     @Override
-    public boolean canHandle(String line) {
-        return HR_PATTERN.matcher(line).matches();
+    public boolean canHandle(ConversionResult<String> line) {
+        var lineValue = line.getValue();
+        return HR_PATTERN.matcher(lineValue).matches();
     }
     
     @Override
-    public ConversionResult<String> process(String line) {
+    protected ConversionResult<String> handle(ConversionResult<String> line) {
         // Horizontal rules are converted to em dash sequence
         return ConversionResult.success("———");
     }

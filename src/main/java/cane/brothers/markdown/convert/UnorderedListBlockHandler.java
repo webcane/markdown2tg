@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Block handler for unordered lists
  */
-class UnorderedListBlockHandler implements BlockHandler {
+class UnorderedListBlockHandler extends AbstractBlockHandler {
 
     // Pattern to match unordered list items (e.g., "* Item", "- Item", "+ Item")
     private static final Pattern UNORDERED_ITEM_PATTERN = Pattern.compile("^\\s*([*+-])\\s+(.*)$");
@@ -18,17 +18,18 @@ class UnorderedListBlockHandler implements BlockHandler {
     }
 
     @Override
-    public boolean canHandle(String line) {
-        return UNORDERED_ITEM_PATTERN.matcher(line).matches();
+    public boolean canHandle(ConversionResult<String> line) {
+        var lineValue = line.getValue();
+        return UNORDERED_ITEM_PATTERN.matcher(lineValue).matches();
     }
     
     @Override
-    public ConversionResult<String> process(String line) {
-        Matcher matcher = UNORDERED_ITEM_PATTERN.matcher(line);
+    protected ConversionResult<String> handle(ConversionResult<String> line) {
+        Matcher matcher = UNORDERED_ITEM_PATTERN.matcher(line.getValue());
         if (matcher.matches()) {
             String text = matcher.group(2);
-            String processedText = inlineProcessor.process(text);
-            return ConversionResult.success("- " + processedText);
+//            String processedText = inlineProcessor.process(text);
+            return ConversionResult.success("- " + text);
         }
         return ConversionResult.failure();
     }

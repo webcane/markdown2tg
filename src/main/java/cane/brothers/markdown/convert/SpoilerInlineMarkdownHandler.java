@@ -11,14 +11,16 @@ class SpoilerInlineMarkdownHandler implements InlineMarkdownHandler {
     private static final Pattern SPOILER_PATTERN = Pattern.compile("\\|\\|(.+?)\\|\\|");
     
     @Override
-    public boolean canHandle(String line) {
-        return SPOILER_PATTERN.matcher(line).find();
+    public boolean canHandle(ConversionResult<String> line) {
+        var lineValue = line.getValue();
+        return SPOILER_PATTERN.matcher(lineValue).find();
     }
     
     @Override
-    public ConversionResult<String> process(String line) {
+    public ConversionResult<String> apply(ConversionResult<String> line) {
+        var lineValue = line.getValue();
         // Spoiler format remains unchanged in Telegram MarkdownV2
-        return ConversionResult.success(line);
+        return ConversionResult.success(lineValue);
     }
     
     @Override

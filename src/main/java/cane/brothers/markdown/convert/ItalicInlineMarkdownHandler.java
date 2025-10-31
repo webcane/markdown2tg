@@ -13,14 +13,15 @@ public class ItalicInlineMarkdownHandler implements InlineMarkdownHandler {
     private static final Pattern SINGLE_UNDERSCORE_PATTERN = Pattern.compile("(?<!_)_([^_]+?)_(?!_)");
 
     @Override
-    public boolean canHandle(String line) {
-        return SINGLE_ASTERISK_PATTERN.matcher(line).find() ||
-                SINGLE_UNDERSCORE_PATTERN.matcher(line).find();
+    public boolean canHandle(ConversionResult<String> line) {
+        var lineValue = line.getValue();
+        return SINGLE_ASTERISK_PATTERN.matcher(lineValue).find() ||
+                SINGLE_UNDERSCORE_PATTERN.matcher(lineValue).find();
     }
 
     @Override
-    public ConversionResult<String> process(String line) {
-        String result = line;
+    public ConversionResult<String> apply(ConversionResult<String> line) {
+        String result = line.getValue();
 
         // Convert *text* to _text_
         result = SINGLE_ASTERISK_PATTERN.matcher(result).replaceAll(matchResult -> {

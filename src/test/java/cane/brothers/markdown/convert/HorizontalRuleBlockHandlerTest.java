@@ -1,77 +1,78 @@
 package cane.brothers.markdown.convert;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class HorizontalRuleBlockHandlerTest {
-    
+
     private HorizontalRuleBlockHandler handler;
-    
+
     @BeforeEach
     void setUp() {
         handler = new HorizontalRuleBlockHandler();
     }
-    
-    @Test
-    void testCanHandleWithDashes() {
-        assertTrue(handler.canHandle("---"));
-        assertTrue(handler.canHandle("----"));
-        assertTrue(handler.canHandle("---   "));
-        assertFalse(handler.canHandle("--"));
-        assertFalse(handler.canHandle("Some text --- more text"));
+
+    @ParameterizedTest
+    @ValueSource(strings = {"---", "----", "---   "})
+    void testCanHandleWithDashesTrue(String line) {
+        var result = new ConversionResult<String>(line);
+        assertTrue(handler.canHandle(result));
     }
-    
-    @Test
-    void testCanHandleWithUnderscores() {
-        assertTrue(handler.canHandle("___"));
-        assertTrue(handler.canHandle("____"));
-        assertTrue(handler.canHandle("___   "));
-        assertFalse(handler.canHandle("__"));
+
+    @ParameterizedTest
+    @ValueSource(strings = {"--", "Some text --- more text"})
+    void testCanHandleWithDashesFalse(String line) {
+        var result = new ConversionResult<String>(line);
+        assertFalse(handler.canHandle(result));
     }
-    
-    @Test
-    void testCanHandleWithAsterisks() {
-        assertTrue(handler.canHandle("***"));
-        assertTrue(handler.canHandle("****"));
-        assertTrue(handler.canHandle("***   "));
-        assertFalse(handler.canHandle("**"));
+
+    @ParameterizedTest
+    @ValueSource(strings = {"___", "____", "___   "})
+    void testCanHandleWithUnderscoresTrue(String line) {
+        var result = new ConversionResult<String>(line);
+        assertTrue(handler.canHandle(result));
     }
-    
-    @Test
-    void testProcessReturnsEmDash() {
-        var result = handler.process("---");
-        assertTrue(result.isConverted());
+
+    @ParameterizedTest
+    @ValueSource(strings = {"__"})
+    void testCanHandleWithUnderscoresFalse(String line) {
+        var result = new ConversionResult<String>(line);
+        assertFalse(handler.canHandle(result));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"***", "****", "***   "})
+    void testCanHandleWithAsterisksTrue(String line) {
+        var result = new ConversionResult<String>(line);
+        assertTrue(handler.canHandle(result));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"**"})
+    void testCanHandleWithAsterisksFalse(String line) {
+        var result = new ConversionResult<String>(line);
+        assertFalse(handler.canHandle(result));
+    }
+
+
+    @ParameterizedTest
+    @ValueSource(strings = {"---", "___", "***", "---   "})
+    void testProcessReturnsEmDash(String line) {
+        var result = new ConversionResult<String>(line);
+        result = handler.apply(result);
+        assertTrue(result.isConverted().orElse(false));
         assertEquals("———", result.getValue());
     }
-    
-    @Test
-    void testProcessWithUnderscores() {
-        var result = handler.process("___");
-        assertTrue(result.isConverted());
-        assertEquals("———", result.getValue());
-    }
-    
-    @Test
-    void testProcessWithAsterisks() {
-        var result = handler.process("***");
-        assertTrue(result.isConverted());
-        assertEquals("———", result.getValue());
-    }
-    
-    @Test
-    void testProcessWithSpaces() {
-        var result = handler.process("---   ");
-        assertTrue(result.isConverted());
-        assertEquals("———", result.getValue());
-    }
-    
+
     @Test
     void testGetPriority() {
         assertEquals(95, handler.getPriority());
     }
-    
+
     @Test
     void testGetName() {
         assertEquals("horizontal-rule", handler.getName());
