@@ -8,9 +8,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class EscapeUtils {
+/**
+ * Utility class for escaping special characters in Telegram MarkdownV2.
+ * <a href="https://core.telegram.org/bots/api#markdownv2-style">markdownv2-style</a>
+ */
+final class EscapeUtils {
 
-    static final Map<CharSequence, CharSequence> ESCAPE_MAP = new HashMap<>() {
+    private static final Map<CharSequence, CharSequence> TG_MD_V2_FULL_ESCAPE_MAP = new HashMap<>() {
         {
             put("\\", "\\\\");
             put("_", "\\_");
@@ -34,11 +38,45 @@ public final class EscapeUtils {
             put("!", "\\!");
         }
     };
-    static final AggregateTranslator ESCAPE = new AggregateTranslator(
-            new LookupTranslator(Collections.unmodifiableMap(ESCAPE_MAP))
+    static final AggregateTranslator FULL_ESCAPE = new AggregateTranslator(
+            new LookupTranslator(Collections.unmodifiableMap(TG_MD_V2_FULL_ESCAPE_MAP))
+    );
+
+    private static final Map<CharSequence, CharSequence> TG_MD_V2_CODE_ESCAPE_MAP = new HashMap<>() {
+        {
+            put("\\", "\\\\");
+            put("`", "\\`");
+        }
+    };
+    static final AggregateTranslator CODE_ESCAPE = new AggregateTranslator(
+            new LookupTranslator(Collections.unmodifiableMap(TG_MD_V2_CODE_ESCAPE_MAP))
+    );
+
+    private static final Map<CharSequence, CharSequence> TG_MD_V2_LINK_ESCAPE_MAP = new HashMap<>() {
+        {
+            put("\\", "\\\\");
+            put(")", "\\)");
+        }
+    };
+    static final AggregateTranslator LINK_ESCAPE = new AggregateTranslator(
+            new LookupTranslator(Collections.unmodifiableMap(TG_MD_V2_LINK_ESCAPE_MAP))
     );
 
     private EscapeUtils() {
+    }
+
+    /**
+     * Escape special characters using the provided translator
+     *
+     * @param input      the input string to escape
+     * @param translator the translator defining escape rules
+     * @return the escaped string
+     */
+    public static String escape(String input, AggregateTranslator translator) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+        return StringEscapeUtils.builder(translator).escape(input).toString();
     }
 
     /**
@@ -48,20 +86,6 @@ public final class EscapeUtils {
      * @return the escaped string
      */
     public static String escape(String input) {
-        if (input == null || input.isEmpty()) {
-            return input;
-        }
-        return StringEscapeUtils.builder(ESCAPE).escape(input).toString();
+        return escape(input, FULL_ESCAPE);
     }
-
-    public static String escapeUrlForTelegram(String url) {
-        if (url == null)
-            return null;
-        return url.replace(" ", "%20").replace("(", "%28").replace(")", "%29");
-    }
-
-//    public static String unescapeHtmlToText(String html) {
-//        if (html == null) return null;
-//        return StringEscapeUtils.unescapeHtml4(html);
-//    }
 }

@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class PizzaTests {
+public class PizzaTest {
 
 
     static Stream<Arguments> providePizzaTestData() {
@@ -34,6 +34,4 @@ public class PizzaTests {
         assertNotNull(actual, "Converted output should not be null");
         assertEquals(expected, actual);
     }
-
-
 }

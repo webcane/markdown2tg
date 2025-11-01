@@ -1,20 +1,23 @@
 package cane.brothers.markdown.convert;
 
-
-import org.commonmark.node.*;
+import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 
-
 /**
- * Converter from Markdown to Telegram MarkdownV2 using commonmark-java
+ * Converter from standard Markdown (CommonMark) to Telegram MarkdownV2
+ * The main task is to properly escape characters that telegram requires to escape in MarkdownV2.
+ * Using commonmark-java library for parsing and AST traversal.
  */
 public class MarkdownToTelegramConverter {
 
     // AST parser
     private final Parser parser;
 
+    private final TelegramMarkdownRenderer renderer;
+
     public MarkdownToTelegramConverter() {
         this.parser = Parser.builder().build();
+        this.renderer = TelegramMarkdownRenderer.builder().build();
     }
 
     /**
@@ -29,29 +32,6 @@ public class MarkdownToTelegramConverter {
         }
 
         Node document = parser.parse(markdown);
-        TelegramMarkdownVisitor visitor = new TelegramMarkdownVisitor();
-        document.accept(visitor);
-
-        return visitor.getResult();
+        return renderer.render(document);
     }
-
-    /**
-     * Построчная обработка (для больших файлов)
-     */
-//    public String convertLineByLine(String markdown) {
-//        // С commonmark лучше обрабатывать весь документ сразу,
-//        // так как он строит AST и учитывает контекст
-//        // Но можно разбить на параграфы
-//        String[] blocks = markdown.split("\n\n+");
-//        StringBuilder result = new StringBuilder();
-//
-//        for (String block : blocks) {
-//            if (!block.trim().isEmpty()) {
-//                result.append(convert(block.trim()));
-//                result.append("\n\n");
-//            }
-//        }
-//
-//        return result.toString().trim();
-//    }
 }
