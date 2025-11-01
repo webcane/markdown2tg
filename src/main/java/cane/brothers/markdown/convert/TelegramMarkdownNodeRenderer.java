@@ -39,7 +39,7 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
 
     private final StringBuilder output;
 
-    private final Deque<NodeContext> contextStack = new ArrayDeque<NodeContext>();
+    private final Deque<NodeContext> contextStack = new ArrayDeque<>();
 
     private boolean inCodeBlock = false;
     private boolean inCode = false;
@@ -344,7 +344,7 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
      * Remove trailing newlines
      */
     private void trimTrailingNewlines() {
-        while (output.length() > 0 && output.charAt(output.length() - 1) == '\n') {
+        while (!output.isEmpty() && output.charAt(output.length() - 1) == '\n') {
             output.setLength(output.length() - 1);
         }
     }
@@ -363,7 +363,7 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
      * Types of nodes we handle
      */
     private enum NodeType {
-        HEADING, PARAGRAPH, TEXT,
+        HEADING, PARAGRAPH,
         EMPHASIS, STRONG, CODE, CODE_BLOCK,
         LINK, IMAGE, BULLET_LIST, ORDERED_LIST, LIST_ITEM,
         BLOCK_QUOTE
