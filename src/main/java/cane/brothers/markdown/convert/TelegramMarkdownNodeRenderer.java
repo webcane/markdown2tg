@@ -51,17 +51,6 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
         this.output = new StringBuilder();
     }
 
-    /**
-     * Append text to output with exception handling
-     */
-    protected void append(String text) {
-        try {
-            output.append(text);
-        } catch (Exception e) {
-            throw new RuntimeException("Append failed", e);
-        }
-    }
-
     @Override
     public Set<Class<? extends Node>> getNodeTypes() {
         return new HashSet<>(Arrays.asList(
@@ -82,9 +71,7 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
                 BlockQuote.class,
                 HardLineBreak.class,
                 SoftLineBreak.class,
-                ThematicBreak.class,
-                HtmlBlock.class,
-                HtmlInline.class
+                ThematicBreak.class
         ));
     }
 
@@ -106,9 +93,9 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
         // using bold instead
         contextStack.push(new NodeContext(NodeType.HEADING, heading.getLevel()));
 
-        append("*");
+        output.append("*");
         visitChildren(heading);
-        append("*");
+        output.append("*");
 
         contextStack.pop();
         appendBlockSeparator();
@@ -131,7 +118,7 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
             content = EscapeUtils.escape(content);
         }
 
-        append(content);
+        output.append(content);
     }
 
     @Override
@@ -140,9 +127,9 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
         // Telegram MarkdownV2: _text_
         contextStack.push(new NodeContext(NodeType.EMPHASIS)); // ITALIC
 
-        append("_");
+        output.append("_");
         visitChildren(emphasis);
-        append("_");
+        output.append("_");
 
         contextStack.pop();
     }
@@ -153,9 +140,9 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
         // Telegram MarkdownV2: *text*
         contextStack.push(new NodeContext(NodeType.STRONG)); // BOLD
 
-        append("*");
+        output.append("*");
         visitChildren(strongEmphasis);
-        append("*");
+        output.append("*");
 
         contextStack.pop();
     }
@@ -166,10 +153,10 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
         inCode = true;
         contextStack.push(new NodeContext(NodeType.CODE));
 
-        append("`");
+        output.append("`");
         // escape code content
-        append(EscapeUtils.escape(code.getLiteral(), EscapeUtils.CODE_ESCAPE));
-        append("`");
+        output.append(EscapeUtils.escape(code.getLiteral(), EscapeUtils.CODE_ESCAPE));
+        output.append("`");
 
         contextStack.pop();
         inCode = false;
@@ -182,25 +169,25 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
         // Telegram: ```lang\ncode\n``` or ```\ncode\n```
         inCodeBlock = true;
         contextStack.push(new NodeContext(NodeType.CODE_BLOCK));
-        append("```");
+        output.append("```");
 
         String info = fencedCodeBlock.getInfo();
         if (info != null && !info.isEmpty()) {
             // optional language info
-            append(info);
+            output.append(info);
         }
 
-        append("\n");
+        output.append("\n");
         String literal = fencedCodeBlock.getLiteral();
         if (literal != null) {
-            append(literal);
+            output.append(literal);
             // add newline if not present at the end
             if (!literal.endsWith("\n")) {
-                append("\n");
+                output.append("\n");
             }
         }
 
-        append("```");
+        output.append("```");
         contextStack.pop();
         inCodeBlock = false;
         appendBlockSeparator();
@@ -211,14 +198,14 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
         // Code block with 4-space indentation will be converted to fenced code block
         inCodeBlock = true;
         contextStack.push(new NodeContext(NodeType.CODE_BLOCK));
-        append("```\n");
+        output.append("```\n");
 
         String literal = indentedCodeBlock.getLiteral();
         if (literal != null) {
-            append(literal);
+            output.append(literal);
         }
 
-        append("```");
+        output.append("```");
         contextStack.pop();
         inCodeBlock = false;
         appendBlockSeparator();
@@ -229,18 +216,18 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
         // Markdown and Telegram MarkdownV2: [text](url)
         contextStack.push(new NodeContext(NodeType.LINK));
 
-        append("[");
+        output.append("[");
         // Link text might contain formatting
         visitChildren(link);
-        append("](");
+        output.append("](");
 
         String destination = link.getDestination();
         if (destination != null) {
             // escape inline link
-            append(EscapeUtils.escape(destination, EscapeUtils.LINK_ESCAPE));
+            output.append(EscapeUtils.escape(destination, EscapeUtils.LINK_ESCAPE));
         }
 
-        append(")");
+        output.append(")");
         contextStack.pop();
     }
 
@@ -250,26 +237,26 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
         // Using link
         contextStack.push(new NodeContext(NodeType.IMAGE));
 
-        append("[");
+        output.append("[");
 
         // use image alt text as link text or title
         if (image.getFirstChild() != null) {
             visitChildren(image);
         } else if (image.getTitle() != null && !image.getTitle().isEmpty()) {
-            append(EscapeUtils.escape(image.getTitle()));
+            output.append(EscapeUtils.escape(image.getTitle()));
         } else {
-            append("Image");
+            output.append("Image");
         }
 
-        append("](");
+        output.append("](");
 
         String destination = image.getDestination();
         if (destination != null) {
             // escape inline link
-            append(EscapeUtils.escape(destination, EscapeUtils.LINK_ESCAPE));
+            output.append(EscapeUtils.escape(destination, EscapeUtils.LINK_ESCAPE));
         }
 
-        append(")");
+        output.append(")");
         contextStack.pop();
     }
 
@@ -299,16 +286,16 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
         Node parent = listItem.getParent();
         if (parent instanceof OrderedList) {
             // can use numbers, but Telegram supports them badly
-            append("• ");
+            output.append("• ");
         } else {
-            append("- ");
+            output.append("- ");
         }
 
         visitChildren(listItem);
 
         // remove trailing newlines before adding newline
         trimTrailingNewlines();
-        append("\n");
+        output.append("\n");
 
         contextStack.pop();
     }
@@ -317,7 +304,7 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
     public void visit(BlockQuote blockQuote) {
         contextStack.push(new NodeContext(NodeType.BLOCK_QUOTE));
 
-        append(">");
+        output.append(">");
         visitChildren(blockQuote);
 
         // remove trailing newlines
@@ -329,19 +316,19 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
 
     @Override
     public void visit(HardLineBreak hardLineBreak) {
-        append("\n");
+        output.append("\n");
     }
 
     @Override
     public void visit(SoftLineBreak softLineBreak) {
         // Soft line break in Markdown -> whitespace
-        append(" ");
+        output.append(" ");
     }
 
     @Override
     public void visit(ThematicBreak thematicBreak) {
         // Horizontal rule: --- or ***
-        append("---");
+        output.append("---");
         appendBlockSeparator();
     }
 
@@ -350,7 +337,7 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
      */
     private void appendBlockSeparator() {
         // append double newline if last was not block
-        append("\n\n");
+        output.append("\n\n");
     }
 
     /**
