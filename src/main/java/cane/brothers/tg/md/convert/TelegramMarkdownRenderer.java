@@ -1,4 +1,4 @@
-package cane.brothers.markdown.convert;
+package cane.brothers.tg.md.convert;
 
 import org.commonmark.node.Node;
 import org.commonmark.renderer.Renderer;

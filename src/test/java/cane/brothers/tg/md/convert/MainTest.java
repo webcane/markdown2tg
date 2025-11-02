@@ -1,4 +1,4 @@
-package cane.brothers.markdown.convert;
+package cane.brothers.tg.md.convert;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -12,21 +12,20 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class PizzaTest {
+public class MainTest {
 
-
-    static Stream<Arguments> providePizzaTestData() {
-        return Stream.of(Arguments.of("src/test/resources/pizza.md", "src/test/resources/pizza.txt"));
+    static Stream<Arguments> provideMainTestData() {
+        return Stream.of(Arguments.of("src/test/resources/main.md", "src/test/resources/main.txt"));
     }
 
     @ParameterizedTest
-    @MethodSource("providePizzaTestData")
-    void testConvertPizzaMdFromResources(String mdFile, String txtFile) throws IOException {
+    @MethodSource("provideMainTestData")
+    void testConvertMainMdFromResources(String mdFile, String txtFile) throws IOException {
         String input = Files.readString(Paths.get(mdFile));
         String expected = Files.readString(Paths.get(txtFile));
 
-        assertNotNull(input, "pizza.md should exist in resources");
-        assertNotNull(expected, "pizza.txt should exist in resources");
+        assertNotNull(input, "main.md should exist in resources");
+        assertNotNull(expected, "main.txt should exist in resources");
 
         MarkdownToTelegramConverter converter = new MarkdownToTelegramConverter();
         String actual = converter.convert(input);

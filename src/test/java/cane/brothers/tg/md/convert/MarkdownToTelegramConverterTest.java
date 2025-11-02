@@ -1,4 +1,4 @@
-package cane.brothers.markdown.convert;
+package cane.brothers.tg.md.convert;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
