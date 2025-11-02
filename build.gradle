@@ -9,7 +9,7 @@ java {
     }
 }
 
-group = 'cane.brothers.tg'
+group = 'cane.brothers'
 
 repositories {
     mavenCentral()
