@@ -17,21 +17,33 @@ A lightweight Java library that transforms common [Markdown](https://commonmark.
 
 ## Installation
 
-In `build.gradle`:
+> **Note:** You need a GitHub personal access token (PAT) with at least `read:packages` permission to download packages from GitHub. Set it as `gpr.key` and your GitHub username as `gpr.user` in your `gradle.properties`.
 
+In `build.gradle`:
+```groovy
+repositories {
+    maven {
+        name = "markdown2tg"
+        url = uri("https://maven.pkg.github.com/webcane/markdown2tg")
+        credentials {
+            username = project.findProperty("gpr.user")
+            password = project.findProperty("gpr.key")
+        }
+    }
+}
+```
 ```groovy
 dependencies {
-    api 'org.apache.commons:commons-text:1.14.0'
-    api 'org.commonmark:commonmark:0.27.0'
+    implementation "cane.brothers:markdown2tg:${version}"
 }
 ```
 
 ## Usage
 
 ```java
-import cane.brothers.markdown.convert.TelegramMarkdownConverter;
+import cane.brothers.tg.md.convert.MarkdownToTelegramConverter;
 
-TelegramMarkdownConverter c = new TelegramMarkdownConverter();
+MarkdownToTelegramConverter c = new MarkdownToTelegramConverter();
 String out = c.convert("# Title\n\n*Hello* **world**. [link](https://example.com)");
 ```
 
