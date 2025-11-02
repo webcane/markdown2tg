@@ -10,7 +10,6 @@ java {
 }
 
 group = 'cane.brothers.tg'
-version = '0.1.0'
 
 repositories {
     mavenCentral()
@@ -30,7 +29,7 @@ test {
 
 publishing {
     publications {
-        gpr(MavenPublication) {
+        create("gpr", MavenPublication) {
             from(components.java)
         }
     }
