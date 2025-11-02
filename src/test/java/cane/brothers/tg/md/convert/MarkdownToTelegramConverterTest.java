@@ -133,25 +133,8 @@ class MarkdownToTelegramConverterTest {
         @Test
         void testThematicBreak() {
             assertEquals("---", converter.convert("---"));
+            assertEquals("---", converter.convert("***"));
+            assertEquals("---", converter.convert("———"));
         }
-    }
-
-
-    void testHorizontalRule() {
-        assertEquals("———", converter.convert("---"));
-        assertEquals("———", converter.convert("***"));
-        assertEquals("———", converter.convert("___"));
-    }
-
-    @Test
-    void testMain() {
-        String md = """
-                
-                """;
-//        assertEquals(expected, converter.convert(md));
-        String result = converter.convert(md);
-        System.out.println("=== Результат конвертации ===");
-        System.out.println(result);
-
     }
 }
