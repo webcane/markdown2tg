@@ -27,10 +27,16 @@ test {
     useJUnitPlatform()
 }
 
+tasks.register('sourceJar', Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier.set('sources')
+}
+
 publishing {
     publications {
         create("gpr", MavenPublication) {
             from(components.java)
+            artifact sourceJar
         }
     }
     repositories {
