@@ -33,4 +33,4 @@ jobs:
         env:
           GPR_USER: ${{ github.actor }}
           GPR_KEY: ${{ secrets.GPR_KEY }}
-        run: ./gradlew publish -Pgpr.user=$GPR_USER -Pgpr.key=$GPR_KEY
+        run: gradle publish -Pgpr.user=$GPR_USER -Pgpr.key=$GPR_KEY
