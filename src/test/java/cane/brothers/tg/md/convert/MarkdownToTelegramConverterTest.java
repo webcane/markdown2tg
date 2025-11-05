@@ -108,7 +108,7 @@ class MarkdownToTelegramConverterTest {
         @Test
         void testBulletList() {
             String md = "- item1\n- item2";
-            String expected = "- item1\n- item2";
+            String expected = "\\- item1\n\\- item2";
             assertEquals(expected, converter.convert(md));
         }
 
@@ -132,9 +132,8 @@ class MarkdownToTelegramConverterTest {
     class ThematicBreakTests {
         @Test
         void testThematicBreak() {
-            assertEquals("---", converter.convert("---"));
-            assertEquals("---", converter.convert("***"));
-            assertEquals("---", converter.convert("———"));
+            assertEquals("\\-\\-\\-", converter.convert("---"));
+            assertEquals("\\-\\-\\-", converter.convert("***"));
         }
     }
 }

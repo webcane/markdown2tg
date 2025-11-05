@@ -101,7 +101,7 @@ class TelegramMarkdownRendererTest {
         @Test
         void testBulletList() {
             String md = "- item1\n- item2";
-            String expected = "- item1\n- item2";
+            String expected = "\\- item1\n\\- item2";
             assertEquals(expected, convert(md));
         }
 
@@ -128,7 +128,7 @@ class TelegramMarkdownRendererTest {
         @Test
         void testThematicBreak() {
             String md = "---";
-            String expected = "---";
+            String expected = "\\-\\-\\-";
             assertEquals(expected, convert(md));
         }
     }

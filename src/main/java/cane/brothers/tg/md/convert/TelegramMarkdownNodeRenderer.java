@@ -288,7 +288,7 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
             // can use numbers, but Telegram supports them badly
             output.append("• ");
         } else {
-            output.append("- ");
+            output.append(EscapeUtils.escape("- "));
         }
 
         visitChildren(listItem);
@@ -328,7 +328,7 @@ class TelegramMarkdownNodeRenderer extends AbstractVisitor implements NodeRender
     @Override
     public void visit(ThematicBreak thematicBreak) {
         // Horizontal rule: --- or ***
-        output.append("---");
+        output.append(EscapeUtils.escape("---"));
         appendBlockSeparator();
     }
 
